@@ -14,9 +14,12 @@
 Пищевую страницу собирает tools/food/assemble.py — после него запустите этот скрипт ещё раз.
 """
 import re
+import sys
 import pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
+sys.path.insert(0, str(ROOT / 'tools' / 'legal'))
+from typo import typo  # неразрывный пробел после коротких слов («и\u00a0отели»), как в остальных текстах сайта
 
 # Отрасли — в порядке блока «Отрасли» на главной; адреса — из SEO-плана
 INDUSTRIES = [
@@ -119,7 +122,7 @@ def main():
         f = ROOT / rel
         s = f.read_text(encoding='utf-8')
         cta = re.search(r'<nav class="mmenu"[^>]*>.*?(<a href="#zayavka" class="btn btn-w btn-lg">.*?</a>)\s*</nav>', s, re.S).group(1)
-        nav, mm, cols = build(root, cur, cta)
+        nav, mm, cols = (typo(x) for x in build(root, cur, cta))
         s = sub1(r'<nav class="nav" aria-label="Основное меню">.*?</nav>', nav, s)
         s = sub1(r'<nav class="mmenu" id="mmenu" aria-label="Мобильное меню">.*?</nav>', mm, s)
         s = sub1(r'<div><h4>(?:Объекты|Отрасли)</h4>.*?(?=\n\s*<div><h4>Контакты</h4>)', cols, s)

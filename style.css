@@ -600,6 +600,9 @@ footer{border-top:1px solid var(--line);padding:clamp(56px,4.3vw,82px) 0 36px;ba
   .ft{grid-template-columns:repeat(2,minmax(0,1fr));gap:36px 20px}.ft>div:first-child,.ft>div:nth-child(4),.ft>div:last-child{grid-column:1/-1}
   .ft ul{gap:0}
   .ft li a,.fb a{display:inline-flex;align-items:center;min-height:44px;padding:0}
+  /* подписи в две строки получают такие же промежутки, как однострочные (у тех высоту задаёт min-height) */
+  .ft li a{padding:10px 0}
+  .fb{gap:0 20px}.fb>span{display:inline-flex;align-items:center;min-height:44px}
   .legal a{display:inline-block;padding:8px 0}
   .mbar{display:flex;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:40;gap:8px;padding:8px;border-radius:999px;background:rgba(18,18,20,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line2);transform:translateY(160%);transition:transform .6s var(--ease)}
   .mbar.show{transform:none}
