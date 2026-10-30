@@ -634,3 +634,16 @@ footer{border-top:1px solid var(--line);padding:clamp(56px,4.3vw,82px) 0 36px;ba
   .js .eyebrow::before{transform:none!important}
   .bar-f{width:var(--w)!important}
 }
+
+/* ===== шапка на узких телефонах: логотип, звонок и меню помещаются в экран 320–400 px ===== */
+@media (max-width:400px){
+  .hdr .wrap{gap:10px}
+  .hdr-right{gap:8px}
+  .logo{gap:8px}
+  .logo-mark{width:34px;height:34px}
+  .logo-name{font-size:15px}
+  .phone i,.burger{width:40px;height:40px}
+}
+@media (max-width:340px){
+  .logo-sub{display:none}
+}
