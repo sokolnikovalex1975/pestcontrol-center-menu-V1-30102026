@@ -24,6 +24,8 @@ function buildPage() {
   return h.slice(0, i) + '\n' + c.slice(a, b) + '\n' + h.slice(i);
 }
 const HTML = process.env.LIVE ? '' : buildPage();
+// app.min.js — тоже из репозитория (как в radist_test.mjs): новая разметка проверяется вместе со своим скриптом
+const APP = process.env.LIVE ? '' : fs.readFileSync(process.env.APP || path.join(ROOT, 'app.min.js'), 'utf8');
 const BASE = 'tel:+74951043570', DT = 'tel:+79990001122';
 
 function stub(mode) {
@@ -58,6 +60,7 @@ async function run(name, opt) {
   page.on('request', r => {
     const u = r.url();
     if (!process.env.LIVE && (u === SITE || u === SITE + '#x')) return r.respond({ status: 200, contentType: 'text/html; charset=utf-8', body: HTML });
+    if (!process.env.LIVE && u.startsWith(SITE + 'app.min.js')) return r.respond({ status: 200, contentType: 'application/javascript; charset=utf-8', body: APP });
     if (u.startsWith('https://mc.yandex.ru/')) return r.respond({ status: 200, contentType: 'application/javascript', body: '/* metrika stub */' });
     if (u.startsWith('https://app.uiscom.ru/static/cs.min.js')) {
       if (opt.uis === 'blocked') return r.abort('blockedbyclient');

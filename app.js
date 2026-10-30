@@ -42,13 +42,18 @@
   };
 
   /* ---------- меню ---------- */
-  var hdr = $('#hdr'), burger = $('#burger'), mmenu = $('#mmenu'), menuOpen = false;
+  var hdr = $('#hdr'), burger = $('#burger'), mmenu = $('#mmenu'), menuOpen = false, mmReset = 0;
+  /* раскрывающиеся пункты мобильного меню («Отрасли»): после закрытия меню возвращаются в исходное состояние */
+  var mmGroups = $$('.mm-group');
+  var setGroup = function (g, o) { g.classList.toggle('open', o); $('.mm-toggle', g).setAttribute('aria-expanded', o); };
+  mmGroups.forEach(function (g) { $('.mm-toggle', g).addEventListener('click', function () { setGroup(g, !g.classList.contains('open')); }); });
   var setMenu = function (o) {
+    clearTimeout(mmReset);
     if (o) { /* центр круга — по фактическому положению кнопки при любом масштабе */
       var r = burger.getBoundingClientRect();
       mmenu.style.setProperty('--mx', (r.left + r.width / 2) + 'px');
       mmenu.style.setProperty('--my', (r.top + r.height / 2) + 'px');
-    }
+    } else mmReset = setTimeout(function () { mmGroups.forEach(function (g) { setGroup(g, g.hasAttribute('data-open')); }); }, 800);
     menuOpen = o;
     document.body.classList.toggle('menu-open', o);
     burger.setAttribute('aria-expanded', o);
@@ -58,7 +63,26 @@
   };
   burger.addEventListener('click', function () { setMenu(!menuOpen); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && menuOpen) setMenu(false); });
-  $$('.mmenu a').forEach(function (a, i) { a.style.setProperty('--d', (0.15 + i * 0.045) + 's'); }); /* задержка только при открытии */
+  $$('.mmenu > a, .mmenu .mm-toggle').forEach(function (a, i) { a.style.setProperty('--d', (0.15 + i * 0.045) + 's'); }); /* задержка только при открытии */
+
+  /* выпадающий список «Отрасли» в шапке. Мышь: открывается наведением (CSS). Касание и клавиатура: щелчок по кнопке,
+     Esc и щелчок вне списка закрывают, стрелка вниз переводит фокус на первый пункт */
+  $$('.nav-dd').forEach(function (dd) {
+    var btn = $('.nav-dd-btn', dd);
+    var set = function (o) { dd.classList.toggle('open', o); btn.setAttribute('aria-expanded', o); };
+    btn.addEventListener('click', function () {
+      if (fine && dd.matches(':hover') && !dd.classList.contains('open') && !dd.classList.contains('nohover')) return; /* уже открыт наведением */
+      set(!dd.classList.contains('open'));
+    });
+    dd.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { set(false); dd.classList.add('nohover'); btn.focus(); }
+      else if (e.key === 'ArrowDown' && e.target === btn) { e.preventDefault(); set(true); var f = $('.nav-dd-panel a', dd); if (f) f.focus(); }
+    });
+    dd.addEventListener('focusout', function (e) { if (!dd.contains(e.relatedTarget)) set(false); });
+    dd.addEventListener('mouseleave', function () { dd.classList.remove('nohover'); if (!dd.contains(document.activeElement)) set(false); });
+    document.addEventListener('click', function (e) { if (!dd.contains(e.target)) set(false); });
+    $$('.nav-dd-panel a', dd).forEach(function (a) { a.addEventListener('click', function () { set(false); dd.classList.add('nohover'); }); });
+  });
 
   /* ---------- якоря ---------- */
   $$('a[href^="#"]').forEach(function (a) {
@@ -121,15 +145,17 @@
     addEventListener('resize', fitFab);
   }
 
-  /* активный пункт меню */
-  var links = $$('.nav a');
+  /* активный пункт меню: на главной подсвечиваются якоря шапки (и «Отрасли» у блока отраслей) по мере прокрутки.
+     Ссылки на другие страницы не отслеживаются; текущая страница отмечена в HTML (aria-current) */
+  var links = $$('.nav > a[href^="#"], .nav [data-spy]');
+  var spyId = function (l) { return (l.getAttribute('data-spy') || l.getAttribute('href')).slice(1); };
   var so = new IntersectionObserver(function (es) {
     es.forEach(function (e) {
-      if (e.isIntersecting) links.forEach(function (l) { l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id); });
+      if (e.isIntersecting) links.forEach(function (l) { l.classList.toggle('active', spyId(l) === e.target.id); });
     });
   }, { rootMargin: '-45% 0px -50% 0px' });
-  links.forEach(function (l) { var s = $(l.getAttribute('href')); if (s) so.observe(s); });
-  so.observe($('#hero'));
+  links.forEach(function (l) { var s = document.getElementById(spyId(l)); if (s) so.observe(s); });
+  if (links.length && $('#hero')) so.observe($('#hero'));
 
   /* ---------- FAQ ---------- */
   var refreshLater = (function () { var t; return function () { clearTimeout(t); t = setTimeout(function () { if (hasGSAP) ScrollTrigger.refresh(); }, 650); }; })();
