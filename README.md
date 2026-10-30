@@ -1,4 +1,15 @@
-# ПЕСТКОНТРОЛЬ Центр — лендинг, редакция v4
+# ПЕСТКОНТРОЛЬ Центр — превью меню, вариант 1 (версия 30102026)
+
+Отдельная версия для просмотра и согласования от 30.10.2026. Рабочий сайт [пестконтроль-центр.рф](https://xn----itbbsflddbfpfdodg9d0f.xn--p1ai/) и репозиторий [pestcontrol-center-landing-v4](https://github.com/sokolnikovalex1975/pestcontrol-center-landing-v4) ею не заменены.
+
+- Просмотр: [sokolnikovalex1975.github.io/pestcontrol-center-menu-V1-30102026](https://sokolnikovalex1975.github.io/pestcontrol-center-menu-V1-30102026/) — главная, [договор](https://sokolnikovalex1975.github.io/pestcontrol-center-menu-V1-30102026/dogovor-deratizatsiya-dezinsektsiya/), [пищевое производство](https://sokolnikovalex1975.github.io/pestcontrol-center-menu-V1-30102026/pishchevoe-proizvodstvo/).
+- Меню: «Отрасли ▾ · Договор · Метод IPM · Цена · Материалы»; «Контакты» — только в подвале, пока не согласован адрес. Подробности — [tools/menu/README.md](tools/menu/README.md), список правок — [CHANGES.md](CHANGES.md).
+- Режим предпросмотра: страницы закрыты от индексации (`noindex, nofollow` — только в этой версии), заявки никуда не отправляются, счётчиков Метрики, UIS и Radist на страницах нет. Счётчики и колл-трекинг для рабочего сайта сохранены без изменений в `server/counters.html` и вставляются только при выкладке на хостинг.
+- Страниц пяти отраслей и раздела «Материалы» ещё нет: эти ссылки меню пока открывают ошибку 404.
+
+---
+
+## Исходное описание редакции v4
 
 Новая редакция главной страницы [пестконтроль-центр.рф](https://xn----itbbsflddbfpfdodg9d0f.xn--p1ai/): постоянный пест-контроль для бизнеса в Москве и Московской области. Дизайн прежний; тексты, порядок блоков и метаданные переработаны, чтобы страница не повторяла агерис.рф/audit.
 
