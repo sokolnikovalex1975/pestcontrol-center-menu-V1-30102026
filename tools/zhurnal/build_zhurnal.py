@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""v1: страница /materialy/zhurnal-pest-kontrolya/ (образец, бланк, шаблон журнала пест-контроля) и разводящая /materialy/.
+"""v2: страница /materialy/zhurnal-pest-kontrolya/ (образец заполнения и шаблон-бланк журнала пест-контроля, оба PDF и совпадают лист в лист) и карточка в /materialy/.
 Запуск: python3 build_zhurnal_v1.py <ROOT репозитория>
 Шаблон оформления — dogovor-deratizatsiya-dezinsektsiya/index.html (общие шапка, меню, подвал, форма заявки, скрипты)."""
 import json
@@ -14,12 +14,11 @@ from typo import typo  # noqa: E402
 CANONICAL_BASE = 'https://xn----itbbsflddbfpfdodg9d0f.xn--p1ai'
 PAGE_URL = f'{CANONICAL_BASE}/materialy/zhurnal-pest-kontrolya/'
 TITLE = 'Журнал пест-контроля: образец, бланк и шаблон — ПЕСТКОНТРОЛЬ Центр'
-DESC = 'Образец заполнения журнала пест-контроля, бланк для печати и шаблон Word. Форма из 9 разделов по СанПиН 3.3686-21 и ХАССП: точки контроля, осмотр ловушек, предписания.'
-OG_TITLE = 'Журнал пест-контроля: образец заполнения, бланк PDF и шаблон Word'
-OG_ALT = 'Образец заполнения журнала пест-контроля ПЕСТКОНТРОЛЬ Центр: титульный лист и лист предписаний'
+DESC = 'Образец заполнения журнала пест-контроля и шаблон-бланк для печати в PDF. Форма из 9 разделов по СанПиН 3.3686-21 и ХАССП: точки контроля, осмотр ловушек, предписания.'
+OG_TITLE = 'Журнал пест-контроля: образец заполнения и шаблон в PDF'
+OG_ALT = 'Образец заполнения и шаблон журнала пест-контроля ПЕСТКОНТРОЛЬ Центр: титульные листы'
 F_SAMPLE = 'obrazets-zhurnala-pest-kontrolya.pdf'
-F_BLANK = 'blank-zhurnala-pest-kontrolya.pdf'
-F_DOCX = 'shablon-zhurnala-pest-kontrolya.docx'
+F_TEMPLATE = 'shablon-zhurnala-pest-kontrolya.pdf'
 V = '20261106j'
 
 SANPIN_URL = 'http://pravo.gov.ru/proxy/ips/?docbody=&nd=602107773'
@@ -28,7 +27,7 @@ FAQS = [
     ('Есть ли утверждённая форма журнала пест-контроля?',
      'Единой государственной формы нет. СанПиН 3.3686-21 требует учитывать численность вредителей, контролировать эффективность истребительных мероприятий и вести производственный контроль за их объёмом и качеством (пп. 82, 99, 114), а форму записей определяет программа пест-контроля объекта и договор с подрядчиком. Поэтому журнал разных компаний выглядит по-разному. Наша форма из 9 разделов закрывает и требования санитарных правил, и то, что смотрят аудиторы ХАССП, ISO 22000 и FSSC 22000.'),
     ('Где скачать образец, бланк и шаблон журнала пест-контроля?',
-     'На этой странице, бесплатно и без регистрации: образец заполнения в PDF (10 листов на примере пекарни), пустой бланк в PDF для печати и шаблон в Word для правки под свой объект. В шаблоне можно поменять число строк, добавить свои зоны и коды, но не убирайте поточечный учёт, перечень средств с номерами СГР и лист предписаний — именно их проверяют в первую очередь.'),
+     'На этой странице, бесплатно и без регистрации, два PDF-файла: образец заполнения на 10 листов (журнал пекарни за сентябрь–октябрь) и шаблон — тот же журнал без записей, он же бланк для печати. Файлы совпадают лист в лист, поэтому свой журнал удобно заполнять, глядя в образец. Листы визитов, поточечного осмотра и предписаний печатайте в нужном количестве, а номера листов проставьте при прошивке.'),
     ('Журнал пест-контроля и журнал учёта дератизации и дезинсекции — это одно и то же?',
      'По смыслу да, но журнал пест-контроля шире. Простой журнал учёта дератизации и дезинсекции фиксирует выезды и обработки. Журнал пест-контроля дополнительно ведёт мониторинг вредителей по каждой точке контроля, учёт насекомых по видам, предписания и анализ тенденций — это нужно для ХАССП и аудитов. Ведомость визитов в нашей форме (раздел 4) одновременно служит журналом учёта дератизации и дезинсекции.'),
     ('Кто должен заполнять журнал пест-контроля — сотрудник предприятия или подрядчик?',
@@ -46,7 +45,7 @@ FAQS = [
     ('Сколько хранить заполненные журналы пест-контроля?',
      'Единый срок в санитарных правилах не установлен: его задаёт внутренний порядок предприятия, программа пест-контроля или требования сети. Часто журналы, акты и план-схемы хранят не меньше трёхлетнего цикла сертификации системы пищевой безопасности, чтобы на ресертификационном аудите была видна история.'),
     ('Можно ли заказать у вас только оформление журнала без обслуживания?',
-     'Нет. Мы не заполняем журналы без фактической работы на объекте. Образец, бланк и шаблон можно бесплатно скачать на этой странице, а рабочий журнал со схемой точек, программой и полным комплектом документов мы заводим и ведём по договору после бесплатного обследования.'),
+     'Нет. Мы не заполняем журналы без фактической работы на объекте. Образец и шаблон журнала можно бесплатно скачать на этой странице, а рабочий журнал со схемой точек, программой и полным комплектом документов мы заводим и ведём по договору после бесплатного обследования.'),
 ]
 
 SCHEMA_GRAPH = {
@@ -66,8 +65,7 @@ SCHEMA_GRAPH = {
                        'logo': {'@type': 'ImageObject', 'url': f'{CANONICAL_BASE}/img/zhurnal-og.jpg'}},
          'hasPart': [
              {'@type': 'DigitalDocument', 'name': 'Образец заполнения журнала пест-контроля (PDF, 10 листов)', 'encodingFormat': 'application/pdf', 'url': PAGE_URL + F_SAMPLE, 'inLanguage': 'ru-RU'},
-             {'@type': 'DigitalDocument', 'name': 'Бланк журнала пест-контроля для печати (PDF)', 'encodingFormat': 'application/pdf', 'url': PAGE_URL + F_BLANK, 'inLanguage': 'ru-RU'},
-             {'@type': 'DigitalDocument', 'name': 'Шаблон журнала пест-контроля (Word, DOCX)', 'encodingFormat': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'url': PAGE_URL + F_DOCX, 'inLanguage': 'ru-RU'}]},
+             {'@type': 'DigitalDocument', 'name': 'Шаблон (бланк) журнала пест-контроля для печати (PDF, 10 листов)', 'encodingFormat': 'application/pdf', 'url': PAGE_URL + F_TEMPLATE, 'inLanguage': 'ru-RU'}]},
         {'@type': 'Service', 'name': 'Ведение журнала и документации пест-контроля по договору', 'serviceType': 'Пест-контроль, дератизация и дезинсекция для организаций по системе IPM и ХАССП',
          'provider': {'@type': 'Organization', 'name': 'ПЕСТКОНТРОЛЬ Центр', 'url': f'{CANONICAL_BASE}/', 'telephone': '+7-495-104-35-70'},
          'areaServed': [{'@type': 'City', 'name': 'Москва'}, {'@type': 'AdministrativeArea', 'name': 'Московская область'}]},
@@ -92,7 +90,7 @@ html{scroll-behavior:auto}
 .d-ticks li{position:relative;padding-left:30px;line-height:1.52;color:var(--t1)}
 .d-ticks li::before{content:"";position:absolute;left:2px;top:.45em;width:13px;height:7px;border-left:2px solid var(--acc);border-bottom:2px solid var(--acc);transform:rotate(-45deg)}
 .d-btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
-.p-files{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:16px;font-size:14px;color:var(--t3)}
+.p-files{display:none;flex-wrap:wrap;gap:8px 18px;margin-top:16px;font-size:14px;color:var(--t3)}
 .p-files a{color:var(--t2);text-decoration:underline;text-decoration-color:rgba(124,134,255,.5);text-underline-offset:4px}
 .p-files a:hover{color:var(--t1)}
 .p-stack{position:relative;justify-self:center;width:min(100%,430px);aspect-ratio:430/560}
@@ -108,7 +106,7 @@ html{scroll-behavior:auto}
 .p-toc a{display:inline-flex;gap:8px;align-items:center;padding:9px 14px;border:1px solid var(--line2);border-radius:99px;font-size:13.5px;color:var(--t2);background:rgba(255,255,255,.02);transition:border-color .2s,color .2s}
 .p-toc a:hover{border-color:var(--acc);color:var(--t1)}
 .p-toc b{font-family:var(--mono,monospace);font-size:11px;color:var(--acc);font-weight:500}
-.p-dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.p-dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .p-dl-card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line2);border-radius:var(--r);overflow:hidden}
 .p-dl-card.main{border-color:rgba(253,199,0,.45)}
 .p-dl-img{display:block;background:linear-gradient(180deg,rgba(124,134,255,.1),rgba(124,134,255,0));padding:22px 22px 0;height:250px;overflow:hidden;border-bottom:1px solid var(--line2)}
@@ -227,7 +225,7 @@ html{scroll-behavior:auto}
   .p-hero-copy h1{order:2;font-size:clamp(30px,8vw,40px);line-height:1.06;margin-top:8px}
   .p-hero-copy .p-def{order:3;font-size:14px;line-height:1.48;margin-top:12px}
   .p-hero-copy .d-btns{order:4;margin-top:14px}
-  .p-hero-copy .p-files{order:5;margin-top:12px;font-size:13px}
+  .p-hero-copy .p-files{display:flex;order:5;margin-top:12px;font-size:13px}
   .p-hero-copy .d-ticks{order:6;margin-top:14px;gap:8px;font-size:14px}
   .p-hero-copy .d-ticks li{line-height:1.42;padding-left:26px}
   .p-hero-copy .d-crumbs{order:7;margin:14px 0 0;font-size:11px;line-height:1.3;gap:5px;color:rgba(255,255,255,.38);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -310,14 +308,14 @@ MAIN_HTML = f"""
         <nav class="d-crumbs" aria-label="Навигационная цепочка"><a href="../../">Главная</a><span aria-hidden="true">→</span><a href="../">Материалы</a><span aria-hidden="true">→</span><span aria-current="page">Журнал пест-контроля</span></nav>
         <div class="eyebrow">Материалы · Документы IPM и ХАССП</div>
         <h1><span class="ln"><span>Журнал <span class="nw">пест-контроля:</span></span></span> <span class="ln"><span>образец заполнения,</span></span> <span class="ln"><span><em>бланк и шаблон</em></span></span></h1>
-        <p class="p-def"><strong>Журнал пест-контроля</strong> — рабочий документ объекта, где по каждой пронумерованной точке контроля записывают результат осмотра, применённые средства, находки вредителей и выполнение предписаний. Ниже — готовая форма из 9 разделов: образец заполнения на примере пекарни, пустой бланк для печати и шаблон в Word.</p>
+        <p class="p-def"><strong>Журнал пест-контроля</strong> — рабочий документ объекта, где по каждой пронумерованной точке контроля записывают результат осмотра, применённые средства, находки вредителей и выполнение предписаний. Ниже — готовая форма из 9 разделов: образец заполнения на примере пекарни и шаблон-бланк для печати. Оба файла в PDF и совпадают лист в лист.</p>
         <div class="d-btns">
           <a href="{F_SAMPLE}" class="btn btn-w btn-lg" target="_blank" rel="noopener" data-dl="obrazets"><span class="btn-t">Скачать образец заполнения, PDF</span></a>
-          <a href="#skachat" class="btn btn-o btn-lg p-btn-sec"><span class="btn-t">Бланк и шаблон Word</span></a>
+          <a href="{F_TEMPLATE}" class="btn btn-o btn-lg p-btn-sec" target="_blank" rel="noopener" data-dl="shablon"><span class="btn-t">Скачать шаблон, PDF</span></a>
         </div>
-        <p class="p-files"><a href="{F_BLANK}" target="_blank" rel="noopener" data-dl="blank">Бланк для печати, PDF</a><a href="{F_DOCX}" download data-dl="docx">Шаблон журнала, Word</a></p>
+        <p class="p-files"><a href="{F_TEMPLATE}" target="_blank" rel="noopener" data-dl="shablon">Шаблон журнала для печати, PDF</a></p>
         <ul class="d-ticks">
-          <li>Фирменная форма ПЕСТКОНТРОЛЬ Центра: реквизиты исполнителя, лицензия Роспотребнадзора, коды отметок</li>
+          <li>Образец и шаблон совпадают лист в лист — свой журнал удобно заполнять по образцу</li>
           <li>Учитывает СанПиН 3.3686-21 и то, что смотрят аудиторы ХАССП, ISO 22000 и FSSC 22000</li>
           <li>Рабочий журнал заводим и ведём на объекте с первого визита по договору</li>
         </ul>
@@ -329,7 +327,7 @@ MAIN_HTML = f"""
       </div>
     </div>
     <ol class="p-toc" aria-label="Содержание страницы">
-      <li><a href="#skachat"><b>01</b>Скачать образец, бланк, шаблон</a></li>
+      <li><a href="#skachat"><b>01</b>Скачать образец и шаблон</a></li>
       <li><a href="#forma"><b>02</b>Форма: 9 разделов</a></li>
       <li><a href="#obrazets"><b>03</b>Образец заполнения</a></li>
       <li><a href="#kak-vesti"><b>04</b>Как вести журнал</a></li>
@@ -346,7 +344,7 @@ MAIN_HTML = f"""
     <div class="head">
       <div class="eyebrow">Бесплатно, без регистрации</div>
       <h2>Скачать журнал <span class="nw">пест-контроля:</span> <em>образец, бланк и шаблон</em></h2>
-      <p class="sub">Три файла одной формы. Образец показывает, как выглядят правильные записи за два месяца работы. Бланк печатают и заполняют от руки. Шаблон в Word правят под свой объект: зоны, число точек, коды.</p>
+      <p class="sub">Два файла одной формы, совпадают лист в лист. Образец показывает, как выглядят правильные записи за два месяца работы. Шаблон — тот же журнал без записей: его печатают и заполняют от руки.</p>
     </div>
     <div class="p-dl">
       <article class="p-dl-card main">
@@ -359,21 +357,12 @@ MAIN_HTML = f"""
         </div>
       </article>
       <article class="p-dl-card">
-        <a class="p-dl-img" href="{F_BLANK}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="{IMG}zhurnal-blank-p1-360.webp" srcset="{IMG}zhurnal-blank-p1-360.webp 360w, {IMG}zhurnal-blank-p1-720.webp 720w" sizes="260px" width="360" height="509" loading="lazy" decoding="async" alt=""></a>
+        <a class="p-dl-img" href="{F_TEMPLATE}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="{IMG}zhurnal-shablon-p1-360.webp" srcset="{IMG}zhurnal-shablon-p1-360.webp 360w, {IMG}zhurnal-shablon-p1-720.webp 720w" sizes="260px" width="360" height="509" loading="lazy" decoding="async" alt=""></a>
         <div class="p-dl-body">
           <div class="p-dl-meta"><span class="f">PDF</span><span>10 листов</span><span>для печати</span></div>
-          <h3>Бланк журнала <span class="nw">пест-контроля</span></h3>
-          <p>Пустая форма тех же 9 разделов с разлинованными таблицами. Распечатайте нужное число листов поточечного осмотра и предписаний, пронумеруйте и прошнуруйте журнал.</p>
-          <a href="{F_BLANK}" class="btn btn-o btn-lg" target="_blank" rel="noopener" data-dl="blank"><span class="btn-t">Скачать бланк, PDF</span></a>
-        </div>
-      </article>
-      <article class="p-dl-card">
-        <a class="p-dl-img" href="{F_DOCX}" download tabindex="-1" aria-hidden="true"><img src="{IMG}zhurnal-shablon-p1-360.webp" srcset="{IMG}zhurnal-shablon-p1-360.webp 360w, {IMG}zhurnal-shablon-p1-720.webp 720w" sizes="260px" width="360" height="509" loading="lazy" decoding="async" alt=""></a>
-        <div class="p-dl-body">
-          <div class="p-dl-meta"><span class="f">DOCX</span><span>Word</span><span>редактируемый</span></div>
-          <h3>Шаблон журнала <span class="nw">пест-контроля</span> в Word</h3>
-          <p>Та же форма в редактируемом виде: впишите объект и номер журнала в колонтитул, добавьте строки под свои точки контроля, сохраните графы с номерами СГР, кодами и подписями сторон.</p>
-          <a href="{F_DOCX}" class="btn btn-o btn-lg" download data-dl="docx"><span class="btn-t">Скачать шаблон, Word</span></a>
+          <h3>Шаблон и бланк журнала <span class="nw">пест-контроля</span></h3>
+          <p>Тот же журнал из 9 разделов без записей, с разлинованными таблицами. Листы визитов, поточечного осмотра и предписаний распечатайте в нужном количестве, затем пронумеруйте и прошнуруйте журнал.</p>
+          <a href="{F_TEMPLATE}" class="btn btn-o btn-lg" target="_blank" rel="noopener" data-dl="shablon"><span class="btn-t">Скачать шаблон, PDF</span></a>
         </div>
       </article>
     </div>
@@ -415,19 +404,19 @@ MAIN_HTML = f"""
     <div class="d-split">
       <ol class="d-terms">
         <li><b>Титульный лист и паспорт объекта</b><span>Объект, адрес, площади, зоны защиты, целевые вредители, кратность визитов, ответственные и контакты, график плановых визитов. <i>Реквизиты исполнителя и лицензия — на титуле.</i></span></li>
-        <li><b>Реестр точек пест-контроля (ТПК)</b><span>№ точки, тип устройства, контур, место по план-схеме, дата установки, порог. <i>Отдельная таблица — изменения расстановки.</i></span></li>
+        <li><b>Реестр точек <span class="nw">пест-контроля</span> (ТПК)</b><span>№ точки, тип устройства, контур, место по план-схеме, дата установки, порог. <i>Отдельная таблица — изменения расстановки.</i></span></li>
         <li><b>Перечень средств и материалов</b><span>Наименование и форма, действующее вещество, СГР или декларация, где и как применяется, ограничения. <i>Подписи согласования обеих сторон.</i></span></li>
         <li><b>Ведомость визитов и расхода</b><span>Дата и время, вид визита, выполненные работы и результаты, средства и расход, № акта, подписи специалиста и Заказчика.</span></li>
-        <li><b>Поточечный лист осмотра ТПК</b><span>Чек-лист осмотра ловушек: матрица «точка × дата визита» с кодами: 0, П%, М/К, С, Н, З, Д, Р. <i>Альбомный лист на 30 точек и 8 визитов.</i></span></li>
+        <li><b>Поточечный лист осмотра ТПК</b><span>Чек-лист осмотра ловушек: матрица «точка × дата визита» с кодами: 0, П%, М/К, С, Н, З, Д, Р. <i>Лист на 30 точек и 8 визитов.</i></span></li>
         <li><b>Учёт насекомых по видам</b><span>Дата, точка, вид и стадия, число особей, оценка к порогу, принятые меры. Вывод специалиста о динамике.</span></li>
         <li><b>Замечания и корректирующие действия</b><span>Что выявлено и почему это риск, рекомендация, ответственный и срок, отметка Заказчика о выполнении, проверка подрядчиком.</span></li>
         <li><b>Сигнальный лист и инструктажи</b><span>Что и где персонал увидел между визитами, кто сообщил и кому, отметка подрядчика. Учёт инструктажей сотрудников.</span></li>
         <li><b>Ежемесячная сводка и заверительная надпись</b><span>Визиты, число осмотров, активность грызунов и насекомых, предписания выдано/закрыто, оценка риска. Заверение листов подписями и печатями.</span></li>
       </ol>
       <div class="d-doc">
-        <a href="{F_SAMPLE}" class="d-doc-prev" target="_blank" rel="noopener" aria-label="Открыть образец журнала пест-контроля, PDF"><img src="{IMG}zhurnal-obrazets-p6-720.webp" srcset="{IMG}zhurnal-obrazets-p6-720.webp 720w, {IMG}zhurnal-obrazets-p6-1200.webp 1200w" sizes="(max-width:1100px) 92vw, 400px" width="720" height="509" loading="lazy" decoding="async" alt="Поточечный лист осмотра 30 точек пест-контроля за 7 визитов с кодами отметок — лист 6 образца журнала"></a>
-        <p class="d-small">Раздел 5 образца: поточечный лист осмотра. Жёлтым — достигнут порог, красным — превышение или отлов внутри здания.</p>
-        <a href="{F_BLANK}" class="btn btn-o btn-lg" target="_blank" rel="noopener" data-dl="blank"><span class="btn-t">Скачать пустую форму, PDF</span></a>
+        <a href="{F_SAMPLE}" class="d-doc-prev" target="_blank" rel="noopener" aria-label="Открыть образец журнала пест-контроля, PDF"><img src="{IMG}zhurnal-obrazets-p6-480.webp" srcset="{IMG}zhurnal-obrazets-p6-480.webp 480w, {IMG}zhurnal-obrazets-p6-960.webp 960w" sizes="(max-width:1100px) 92vw, 400px" width="480" height="679" loading="lazy" decoding="async" alt="Поточечный лист осмотра 30 точек пест-контроля за 6 визитов с кодами отметок — лист 6 образца журнала"></a>
+        <p class="d-small">Раздел 5 образца: поточечный лист осмотра. Маркером: жёлтым — достигнут порог, красным — превышение или отлов внутри здания.</p>
+        <a href="{F_TEMPLATE}" class="btn btn-o btn-lg" target="_blank" rel="noopener" data-dl="shablon"><span class="btn-t">Скачать шаблон, PDF</span></a>
       </div>
     </div>
   </div>
@@ -660,9 +649,9 @@ def build_hub(page):
     <p class="p-def">Разбираем, как устроены документы и работа по <span class="nw">пест-контролю</span> на пищевых производствах, складах, в ресторанах и магазинах: что требует СанПиН 3.3686-21, что смотрят аудиторы ХАССП, ISO 22000 и FSSC 22000.</p>
     <div class="p-secs" style="margin-top:36px">
       <article class="p-sec">
-        <div class="p-sec-top"><span class="p-sec-num">Образец · бланк · шаблон</span><span class="p-sec-who">PDF и Word</span></div>
+        <div class="p-sec-top"><span class="p-sec-num">Образец · бланк · шаблон</span><span class="p-sec-who">PDF</span></div>
         <h2 class="p-sec-h"><a href="./zhurnal-pest-kontrolya/">Журнал <span class="nw">пест-контроля:</span> образец заполнения, бланк и шаблон</a></h2>
-        <p>Форма из 9 разделов: реестр точек контроля, поточечный лист осмотра, учёт насекомых, предписания, сигнальный лист персонала. Образец на 10 листов, бланк для печати и шаблон Word.</p>
+        <p>Форма из 9 разделов: реестр точек контроля, поточечный лист осмотра, учёт насекомых, предписания, сигнальный лист персонала. Образец заполнения и шаблон-бланк на 10 листов, совпадают лист в лист.</p>
         <div class="d-btns"><a href="./zhurnal-pest-kontrolya/" class="btn btn-w btn-lg"><span class="btn-t">Открыть журнал и образец</span></a></div>
       </article>
       <article class="p-sec">
@@ -715,21 +704,18 @@ def build_hub(page):
 def patch_hub():
     hub = ROOT / 'materialy' / 'index.html'
     h = hub.read_text(encoding='utf-8')
-    k = h.find('Журнал <span class="nw">пест-контроля</span>: что записывать')
-    if k < 0:
-        k = h.find('Журнал пест-контроля: что записывать')
+    k = h.find('href="./zhurnal-pest-kontrolya/"')
     assert k > 0, 'карточка журнала в разводящей не найдена'
     st = h.rfind('<article', 0, k); en = h.find('</article>', k) + len('</article>')
-    assert 'zhurnal-pest-kontrolya' not in h[st:en]
     class _M:
         def start(self): return st
         def end(self): return en
     old = _M()
     new = typo('''<article class="p-sec">
         <div>
-          <div class="p-sec-top"><span class="p-sec-num">Материал 03 · Опубликован в превью</span><span class="p-sec-who">Образец PDF · бланк · шаблон Word</span></div>
+          <div class="p-sec-top"><span class="p-sec-num">Материал 03 · Опубликован в превью</span><span class="p-sec-who">Образец и шаблон · PDF</span></div>
           <h3><a href="./zhurnal-pest-kontrolya/" style="color:var(--t1)">Журнал <span class="nw">пест-контроля:</span> образец заполнения, бланк и шаблон</a></h3>
-          <p>Форма из 9 разделов: реестр точек контроля, поточечный лист осмотра ловушек, учёт насекомых, предписания и сигнальный лист персонала. Образец на 10 листов, бланк для печати и шаблон Word.</p>
+          <p>Форма из 9 разделов: реестр точек контроля, поточечный лист осмотра ловушек, учёт насекомых, предписания и сигнальный лист персонала. Образец заполнения и шаблон-бланк на 10 листов, совпадают лист в лист.</p>
           <div class="d-btns" style="margin-top:20px"><a href="./zhurnal-pest-kontrolya/" class="btn btn-o btn-lg"><span class="btn-t">Открыть журнал и образец</span></a></div>
         </div>
       </article>''')
