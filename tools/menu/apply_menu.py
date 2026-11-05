@@ -52,6 +52,8 @@ PAGES = [
     (DOGOVOR + '/index.html', '../', DOGOVOR),
     ('pishchevoe-proizvodstvo/index.html', '../', 'pishchevoe-proizvodstvo'),
     ('materialy/pest-menedzhment-ili-razovaya-obrabotka/index.html', '../../', 'materialy/pest-menedzhment-ili-razovaya-obrabotka'),
+    ('materialy/index.html', '../', 'materialy'),
+    ('materialy/programma-pest-kontrolya/index.html', '../../', 'materialy/programma-pest-kontrolya'),
 ]
 
 
@@ -83,7 +85,7 @@ def build(root, cur, cta_mobile):
         f'<div class="nav-dd-panel" id="nav-otrasli">{dd_items}</div></div>'
         + (f'<a href="./" class="active" aria-current="page">Договор</a>' if cur == DOGOVOR else f'<a href="{root}{DOGOVOR}/">Договор</a>')
         + anchor(root, 'podhod', 'Метод IPM') + anchor(root, 'usloviya', 'Цена')
-        + f'<a href="{root}materialy/"{mat_cls}>Материалы</a>\n    </nav>'
+        + (f'<a href="./" class="active" aria-current="page">Материалы</a>' if cur == 'materialy' else f'<a href="{root}materialy/"{mat_cls}>Материалы</a>') + '\n    </nav>'
     )
     # мобильное меню
     sub = ''.join(page_link(root, cur, s, t) for s, t in INDUSTRIES) + anchor(root, 'otrasli', 'Все отрасли')
@@ -96,7 +98,7 @@ def build(root, cur, cta_mobile):
         f'<div class="mm-sub" id="mm-otrasli"><div>{sub}</div></div></div>'
         + (f'<a href="./" aria-current="page">{dog_text}</a>' if cur == DOGOVOR else f'<a href="{root}{DOGOVOR}/">{dog_text}</a>')
         + anchor(root, 'podhod', 'Метод IPM') + anchor(root, 'usloviya', 'Цена')
-        + f'<a href="{root}materialy/"{mm_mat_cur}>Материалы</a>\n'
+        + (f'<a href="./" aria-current="page">Материалы</a>' if cur == 'materialy' else f'<a href="{root}materialy/">Материалы</a>') + '\n'
         f'  {cta_mobile}\n</nav>'
     )
     # подвал: колонки «Отрасли», «Обслуживание», «Материалы» (описание и «Контакты» остаются как были)

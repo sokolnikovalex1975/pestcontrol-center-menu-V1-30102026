@@ -5,7 +5,7 @@
 - Просмотр: [sokolnikovalex1975.github.io/pestcontrol-center-menu-V1-30102026](https://sokolnikovalex1975.github.io/pestcontrol-center-menu-V1-30102026/) — главная, [договор](https://sokolnikovalex1975.github.io/pestcontrol-center-menu-V1-30102026/dogovor-deratizatsiya-dezinsektsiya/), [пищевое производство](https://sokolnikovalex1975.github.io/pestcontrol-center-menu-V1-30102026/pishchevoe-proizvodstvo/).
 - Меню: «Отрасли ▾ · Договор · Метод IPM · Цена · Материалы»; «Контакты» — только в подвале, пока не согласован адрес. Подробности — [tools/menu/README.md](tools/menu/README.md), список правок — [CHANGES.md](CHANGES.md).
 - Режим предпросмотра: страницы закрыты от индексации (`noindex, nofollow` — только в этой версии), заявки никуда не отправляются, счётчиков Метрики, UIS и Radist на страницах нет. Счётчики и колл-трекинг для рабочего сайта сохранены без изменений в `server/counters.html` и вставляются только при выкладке на хостинг.
-- Страниц пяти отраслей и раздела «Материалы» ещё нет: эти ссылки меню пока открывают ошибку 404.
+- Страниц пяти отраслей, «Журнала пест-контроля» и «Точек контроля» ещё нет: эти ссылки меню пока открывают ошибку 404. Раздел [«Материалы»](https://sokolnikovalex1975.github.io/pestcontrol-center-menu-V1-30102026/materialy/) и страница [«Программа пест-контроля»](https://sokolnikovalex1975.github.io/pestcontrol-center-menu-V1-30102026/materialy/programma-pest-kontrolya/) — в превью.
 
 ---
 
