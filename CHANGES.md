@@ -10,7 +10,7 @@
 - **Файлы:** `materialy/zhurnal-pest-kontrolya/obrazets-zhurnala-pest-kontrolya.pdf` обновлён (адрес прежний — на него ссылается `/dezinsektsiya/`), добавлен `shablon-zhurnala-pest-kontrolya.pdf`; удалены `blank-zhurnala-pest-kontrolya.pdf` и `shablon-zhurnala-pest-kontrolya.docx` (шаблон и бланк теперь один PDF).
 - **Страница `/materialy/zhurnal-pest-kontrolya/`:** две карточки скачивания вместо трёх, кнопка «Скачать шаблон, PDF» в первом экране и в блоке «Форма журнала», новые description и og:title, JSON-LD с двумя `DigitalDocument`, ответ FAQ «Где скачать…» переписан; упоминания Word убраны. Цели Метрики: `zhurnal_obrazets`, `zhurnal_shablon`. Превью листов `img/zhurnal-obrazets-p1/p8/p6-*.webp`, `img/zhurnal-shablon-p1-*.webp` и `img/zhurnal-og.jpg` пересобраны.
 - **Карточка в `/materialy/`:** «Образец и шаблон · PDF».
-- **`/dezinsektsiya/`:** в трёх ссылках на журнал «бланк/шаблон Word» заменено на «шаблон в PDF» (текст FAQ и разметка FAQPage совпадают).
+- **`/dezinsektsiya/`:** в трёх ссылках на журнал «бланк/шаблон Word» заменено на «шаблон в PDF» (текст FAQ и разметка FAQPage совпадают); в описании журнала «10 разделов» исправлено на «9 разделов на 10 листах» — как в форме ЖПК-01. Исходник страницы в файлах проекта («Страница Дезинсекция/Вёрстка v1/tools/main.html») исправлен так же.
 - **Счётчики и колл-трекинг:** `server/counters.html` (Метрика `113675622`, UIS, Radist) не менялся; меню применено `tools/menu/apply_menu.py`.
 
 ## Страница «Дератизация для организаций» `/deratizatsiya/` и выпадающее меню «Услуги ▾» (06.11.2026, финальная вёрстка в превью на GitHub Pages, на сайт не выложено)
