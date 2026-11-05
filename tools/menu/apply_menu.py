@@ -21,6 +21,13 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT / 'tools' / 'legal'))
 from typo import typo  # неразрывный пробел после коротких слов («и\u00a0отели»), как в остальных текстах сайта
 
+# Услуги (выпадающий список «Услуги ▾» в шапке и раскрывающийся блок в мобильном меню)
+USLUGI = [
+    ('deratizatsiya', 'Дератизация для организаций'),
+    ('dezinsektsiya', 'Дезинсекция для организаций'),
+    ('dezinfektsiya', 'Дезинфекция для организаций'),
+    ('dogovor-deratizatsiya-dezinsektsiya', 'Договор на обслуживание'),
+]
 # Отрасли — в порядке блока «Отрасли» на главной; адреса — из SEO-плана
 INDUSTRIES = [
     ('pishchevoe-proizvodstvo', 'Пищевые производства'),
@@ -31,6 +38,7 @@ INDUSTRIES = [
     ('gostinitsy', 'Гостиницы и отели'),
 ]
 DOGOVOR = 'dogovor-deratizatsiya-dezinsektsiya'
+DERAT = 'deratizatsiya'
 MATERIALS = [  # слова через дефис не переносим (класс nw, как в остальных текстах сайта)
     ('materialy/programma-pest-kontrolya', 'Программа <span class="nw">пест-контроля</span>'),
     ('materialy/zhurnal-pest-kontrolya', 'Журнал <span class="nw">пест-контроля</span>'),
@@ -49,11 +57,14 @@ ARR = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"
 PAGES = [
     # файл, путь к корню, текущая страница
     ('index.html', '', ''),
+    (DERAT + '/index.html', '../', DERAT),
+    ('dezinsektsiya/index.html', '../', 'dezinsektsiya'),
     (DOGOVOR + '/index.html', '../', DOGOVOR),
     ('pishchevoe-proizvodstvo/index.html', '../', 'pishchevoe-proizvodstvo'),
     ('materialy/pest-menedzhment-ili-razovaya-obrabotka/index.html', '../../', 'materialy/pest-menedzhment-ili-razovaya-obrabotka'),
     ('materialy/index.html', '../', 'materialy'),
     ('materialy/programma-pest-kontrolya/index.html', '../../', 'materialy/programma-pest-kontrolya'),
+    ('materialy/zhurnal-pest-kontrolya/index.html', '../../', 'materialy/zhurnal-pest-kontrolya'),
 ]
 
 
@@ -71,9 +82,13 @@ def anchor(root, sid, text, cls=''):
 
 def build(root, cur, cta_mobile):
     home = root == ''
+    in_usl = cur in ('deratizatsiya', 'dezinsektsiya', 'dezinfektsiya')
     in_ind = any(s == cur for s, _ in INDUSTRIES)
     in_mat = cur.startswith('materialy')
-    # шапка
+    # шапка: Услуги ▾ · Отрасли ▾ · Договор · Метод IPM · Цена · Материалы
+    usl_items = ''.join(page_link(root, cur, s, t + ARR) for s, t in USLUGI)
+    usl_items += anchor(root, 'podhod', '<span>Пест-контроль по системе IPM</span>' + ARR, 'nav-dd-all')
+    usl_btn_cls = 'nav-dd-btn active' if in_usl else 'nav-dd-btn'
     dd_items = ''.join(page_link(root, cur, s, t + ARR) for s, t in INDUSTRIES)
     dd_items += anchor(root, 'otrasli', 'Все отрасли' + ARR, 'nav-dd-all')
     spy = ' data-spy="#otrasli"' if home else ''
@@ -81,20 +96,25 @@ def build(root, cur, cta_mobile):
     mat_cls = ' class="active"' if in_mat else ''
     nav = (
         '<nav class="nav" aria-label="Основное меню">\n'
-        f'      <div class="nav-dd"><button class="{btn_cls}" type="button" aria-expanded="false" aria-controls="nav-otrasli"{spy}>Отрасли{CHEV}</button>'
+        f'      <div class="nav-dd"><button class="{usl_btn_cls}" type="button" aria-expanded="false" aria-controls="nav-uslugi">Услуги{CHEV}</button>'
+        f'<div class="nav-dd-panel" id="nav-uslugi">{usl_items}</div></div>'
+        f'<div class="nav-dd"><button class="{btn_cls}" type="button" aria-expanded="false" aria-controls="nav-otrasli"{spy}>Отрасли{CHEV}</button>'
         f'<div class="nav-dd-panel" id="nav-otrasli">{dd_items}</div></div>'
         + (f'<a href="./" class="active" aria-current="page">Договор</a>' if cur == DOGOVOR else f'<a href="{root}{DOGOVOR}/">Договор</a>')
         + anchor(root, 'podhod', 'Метод IPM') + anchor(root, 'usloviya', 'Цена')
         + (f'<a href="./" class="active" aria-current="page">Материалы</a>' if cur == 'materialy' else f'<a href="{root}materialy/"{mat_cls}>Материалы</a>') + '\n    </nav>'
     )
     # мобильное меню
+    sub_usl = ''.join(page_link(root, cur, s, t) for s, t in USLUGI) + anchor(root, 'podhod', '<span class="nw">Пест-контроль</span> по системе IPM')
+    opened_usl = ' open" data-open' if in_usl else '"'
     sub = ''.join(page_link(root, cur, s, t) for s, t in INDUSTRIES) + anchor(root, 'otrasli', 'Все отрасли')
     opened = ' open" data-open' if in_ind else '"'
     dog_text = 'Договор <small>на дератизацию и дезинсекцию</small>'
-    mm_mat_cur = ' aria-current="page"' if cur == 'materialy' else ''
     mm = (
         '<nav class="mmenu" id="mmenu" aria-label="Мобильное меню">\n'
-        f'  <div class="mm-group{opened}><button class="mm-toggle" type="button" aria-expanded="{"true" if in_ind else "false"}" aria-controls="mm-otrasli">Отрасли{CHEV_M}</button>'
+        f'  <div class="mm-group{opened_usl}><button class="mm-toggle" type="button" aria-expanded="{"true" if in_usl else "false"}" aria-controls="mm-uslugi">Услуги{CHEV_M}</button>'
+        f'<div class="mm-sub" id="mm-uslugi"><div>{sub_usl}</div></div></div>'
+        f'<div class="mm-group{opened}><button class="mm-toggle" type="button" aria-expanded="{"true" if in_ind else "false"}" aria-controls="mm-otrasli">Отрасли{CHEV_M}</button>'
         f'<div class="mm-sub" id="mm-otrasli"><div>{sub}</div></div></div>'
         + (f'<a href="./" aria-current="page">{dog_text}</a>' if cur == DOGOVOR else f'<a href="{root}{DOGOVOR}/">{dog_text}</a>')
         + anchor(root, 'podhod', 'Метод IPM') + anchor(root, 'usloviya', 'Цена')
@@ -104,9 +124,13 @@ def build(root, cur, cta_mobile):
     # подвал: колонки «Отрасли», «Обслуживание», «Материалы» (описание и «Контакты» остаются как были)
     li = lambda a: f'<li>{a}</li>'
     ft_ind = ''.join(li(page_link(root, cur, s, t)) for s, t in INDUSTRIES)
+    derat_ft = (f'<a href="./" aria-current="page">Дератизация для организаций</a>' if cur == DERAT
+                else f'<a href="{root}{DERAT}/">Дератизация для организаций</a>')
+    dez_ft = (f'<a href="./" aria-current="page">Дезинсекция для организаций</a>' if cur == 'dezinsektsiya'
+              else f'<a href="{root}dezinsektsiya/">Дезинсекция для организаций</a>')
     dog_ft = (f'<a href="./" aria-current="page">Договор на дератизацию и дезинсекцию</a>' if cur == DOGOVOR
               else f'<a href="{root}{DOGOVOR}/">Договор на дератизацию и дезинсекцию</a>')
-    ft_srv = li(dog_ft) + ''.join(li(anchor(root, s, t)) for s, t in SERVICE)
+    ft_srv = li(derat_ft) + li(dez_ft) + li(dog_ft) + ''.join(li(anchor(root, s, t)) for s, t in SERVICE)
     # подпись с вложенным <span class="nw"> оборачиваем в один <span>: на телефоне ссылки подвала — inline-flex,
     # и без обёртки пробел перед вложенным тегом пропал бы
     wrap = lambda t: f'<span>{t}</span>' if '<' in t else t

@@ -99,7 +99,7 @@ html:not(.js) .intro,html.anim-fail .intro,html.no-intro .intro{display:none}
 .logo-txt{font-size:0}
 .logo-name{font-weight:600;font-size:clamp(17px,1.45vw,28px);letter-spacing:-.02em}
 .logo-sub{font-weight:500;font-size:clamp(10px,.75vw,14px);color:var(--acc);text-transform:uppercase;letter-spacing:.06em;margin-left:6px}
-.nav{display:flex;align-items:center;gap:clamp(18px,2.3vw,46px)}
+.nav{display:flex;align-items:center;gap:clamp(16px,1.9vw,38px)}
 .nav>a,.nav-dd-btn{font-size:clamp(14px,1.05vw,20px);color:var(--t2);transition:color .25s;position:relative;padding:10px 0;white-space:nowrap}
 .nav>a::after,.nav-dd-btn::after{content:"";position:absolute;left:0;right:0;bottom:2px;height:1px;background:var(--acc);transform:scaleX(0);transform-origin:right;transition:transform .45s var(--ease)}
 .nav>a:hover,.nav>a.active,.nav-dd-btn.active,.nav-dd.open .nav-dd-btn{color:#fff}

@@ -367,50 +367,87 @@
 
   /* ---------- первый экран: «фонарь» инспектора, параллакс, наклон панели ---------- */
   var hero = $('#hero'), media = $('#heroMedia'), lit = $('#heroLit'), panel = $('#panel');
+  var dHero = $('.d-hero'), dMedia = dHero ? $('.d-hero-media', dHero) : null;
   var sx = 0.7, sy = 0.42, tx = 0.7, ty = 0.42, lastMove = -1e9, heroVisible = true, litOn = false;
-  lit.style.setProperty('--sr', mobile ? '190px' : 'clamp(240px, 21vw, 400px)');
-  new IntersectionObserver(function (en) { heroVisible = en[0].isIntersecting; }).observe(hero);
-  hero.addEventListener('pointermove', function (e) {
-    if (e.pointerType !== 'mouse') return;
-    var r = media.getBoundingClientRect();
-    tx = (e.clientX - r.left) / r.width; ty = (e.clientY - r.top) / r.height; lastMove = performance.now();
-  });
-  var litT = 0;
-  gsap.ticker.add(function () {
-    if (!heroVisible || !litOn) return; /* до входа первого экрана фонарь скрыт под заставкой — не считаем */
-    var now = performance.now(), dt = now - litT;
-    if (!fine && dt < 30) return; /* на сенсорных экранах фонарь движется сам и медленно — 30 обновлений в секунду хватает, нагрузка вдвое ниже */
-    litT = now;
-    if (now - lastMove > 2600) {
-      var t = now / 1000;
-      tx = 0.66 + 0.2 * Math.sin(t * 0.33); ty = 0.46 + 0.17 * Math.sin(t * 0.47 + 1.3);
-    }
-    var k = 1 - Math.pow(0.94, Math.min(dt, 100) / 16.67);
-    sx += (tx - sx) * k; sy += (ty - sy) * k;
-    lit.style.setProperty('--sx', (sx * 100).toFixed(2) + '%');
-    lit.style.setProperty('--sy', (sy * 100).toFixed(2) + '%');
-  });
-  if (fine) {
-    var mX = gsap.quickTo(media, 'x', { duration: 1.4, ease: 'power3' }), mY = gsap.quickTo(media, 'y', { duration: 1.4, ease: 'power3' });
-    var pY = gsap.quickTo(panel, 'rotationY', { duration: 1.1, ease: 'power3' }), pX = gsap.quickTo(panel, 'rotationX', { duration: 1.1, ease: 'power3' });
-    gsap.set(panel, { transformPerspective: 1200 });
+  if (lit && media && hero) {
+    lit.style.setProperty('--sr', mobile ? '190px' : 'clamp(240px, 21vw, 400px)');
+    new IntersectionObserver(function (en) { heroVisible = en[0].isIntersecting; }).observe(hero);
     hero.addEventListener('pointermove', function (e) {
-      var px = e.clientX / innerWidth - 0.5, py = e.clientY / innerHeight - 0.5;
-      mX(-px * 30); mY(-py * 20); pY(px * 9); pX(-py * 9);
-      var r = panel.getBoundingClientRect();
-      panel.style.setProperty('--gx', (e.clientX - r.left) + 'px'); panel.style.setProperty('--gy', (e.clientY - r.top) + 'px');
+      if (e.pointerType !== 'mouse') return;
+      var r = media.getBoundingClientRect();
+      tx = (e.clientX - r.left) / r.width; ty = (e.clientY - r.top) / r.height; lastMove = performance.now();
     });
-    hero.addEventListener('pointerleave', function () { mX(0); mY(0); pX(0); pY(0); });
+    var litT = 0;
+    gsap.ticker.add(function () {
+      if (!heroVisible || !litOn) return; /* до входа первого экрана фонарь скрыт под заставкой — не считаем */
+      var now = performance.now(), dt = now - litT;
+      if (!fine && dt < 30) return; /* на сенсорных экранах фонарь движется сам и медленно — 30 обновлений в секунду хватает, нагрузка вдвое ниже */
+      litT = now;
+      if (now - lastMove > 2600) {
+        var t = now / 1000;
+        tx = 0.66 + 0.2 * Math.sin(t * 0.33); ty = 0.46 + 0.17 * Math.sin(t * 0.47 + 1.3);
+      }
+      var k = 1 - Math.pow(0.94, Math.min(dt, 100) / 16.67);
+      sx += (tx - sx) * k; sy += (ty - sy) * k;
+      lit.style.setProperty('--sx', (sx * 100).toFixed(2) + '%');
+      lit.style.setProperty('--sy', (sy * 100).toFixed(2) + '%');
+    });
+    if (fine && panel) {
+      var mX = gsap.quickTo(media, 'x', { duration: 1.4, ease: 'power3' }), mY = gsap.quickTo(media, 'y', { duration: 1.4, ease: 'power3' });
+      var pY = gsap.quickTo(panel, 'rotationY', { duration: 1.1, ease: 'power3' }), pX = gsap.quickTo(panel, 'rotationX', { duration: 1.1, ease: 'power3' });
+      gsap.set(panel, { transformPerspective: 1200 });
+      hero.addEventListener('pointermove', function (e) {
+        var px = e.clientX / innerWidth - 0.5, py = e.clientY / innerHeight - 0.5;
+        mX(-px * 30); mY(-py * 20); pY(px * 9); pX(-py * 9);
+        var r = panel.getBoundingClientRect();
+        panel.style.setProperty('--gx', (e.clientX - r.left) + 'px'); panel.style.setProperty('--gy', (e.clientY - r.top) + 'px');
+      });
+      hero.addEventListener('pointerleave', function () { mX(0); mY(0); pX(0); pY(0); });
+    }
+    /* уход первого экрана при прокрутке */
+    gsap.timeline({ scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } })
+      .to(media, { yPercent: 14, scale: 1.1, ease: 'none' }, 0)
+      .to('.hero .wrap', { y: -110, opacity: 0.1, ease: 'none' }, 0);
+  } else if (dHero && dMedia) {
+    if (fine && desk) {
+      var dmX = gsap.quickTo(dMedia, 'x', { duration: 1.4, ease: 'power3' }), dmY = gsap.quickTo(dMedia, 'y', { duration: 1.4, ease: 'power3' });
+      dHero.addEventListener('pointermove', function (e) {
+        var px = e.clientX / innerWidth - 0.5, py = e.clientY / innerHeight - 0.5;
+        dmX(-px * 22); dmY(-py * 14);
+      });
+      dHero.addEventListener('pointerleave', function () { dmX(0); dmY(0); });
+    }
+    if (desk) {
+      gsap.timeline({ scrollTrigger: { trigger: dHero, start: 'top top', end: 'bottom top', scrub: true } })
+        .to(dMedia, { yPercent: 10, scale: 1.07, ease: 'none' }, 0);
+    }
+    var fPanel = $('.f-check.panel');
+    if (fine && fPanel) {
+      fPanel.addEventListener('pointermove', function (e) {
+        var r = fPanel.getBoundingClientRect();
+        fPanel.style.setProperty('--gx', (e.clientX - r.left) + 'px'); fPanel.style.setProperty('--gy', (e.clientY - r.top) + 'px');
+      });
+    }
   }
-  /* уход первого экрана при прокрутке */
-  gsap.timeline({ scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } })
-    .to(media, { yPercent: 14, scale: 1.1, ease: 'none' }, 0)
-    .to('.hero .wrap', { y: -110, opacity: 0.1, ease: 'none' }, 0);
 
   /* вход первого экрана */
   var heroLines = $$('.hero h1 .ln>span');
-  gsap.set(heroLines, { y: 0, yPercent: 110, rotation: 3 });
+  if (heroLines.length) gsap.set(heroLines, { y: 0, yPercent: 110, rotation: 3 });
   function heroIn() {
+    if (dHero) {
+      var dEyebrow = $('.eyebrow', dHero);
+      if (dEyebrow) dEyebrow.classList.add('in');
+      var dLines = $$('.d-hero h1 .ln>span');
+      var tlD = gsap.timeline({ defaults: { ease: 'expo.out' } });
+      tlD.fromTo('.d-hero-img', { scale: 1.12 }, { scale: 1, duration: 2.2, clearProps: 'transform' }, 0)
+        .fromTo('.d-crumbs', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.9, clearProps: 'transform' }, 0.05)
+        .fromTo(dLines, { y: 0, yPercent: 110, rotation: 3 }, { yPercent: 0, rotation: 0, duration: 1.3, stagger: 0.1, clearProps: 'transform' }, 0.12)
+        .fromTo('.hero-vbar', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.95, clearProps: 'transform' }, 0.28)
+        .fromTo('.d-hero .d-ticks li', { opacity: 0, x: -18 }, { opacity: 1, x: 0, duration: 0.85, stagger: 0.07, clearProps: 'transform' }, 0.35)
+        .fromTo('.d-hero .sub', fx({ opacity: 0, y: 18 }, 6), fx({ opacity: 1, y: 0, duration: 1, clearProps: 'filter,transform' }, 0), 0.42)
+        .fromTo('.d-hero .d-btns', { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 1, clearProps: 'transform' }, 0.48);
+      return;
+    }
     litOn = true;
     var tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
     tl.fromTo('.hero-bg,.hero-lit', { scale: 1.18 }, { scale: 1, duration: 2.6 }, 0)
@@ -448,18 +485,21 @@
   }
 
   /* ---------- бегущая строка, реагирующая на скорость прокрутки ---------- */
-  var track = $('#stripTrack'), set1 = track.firstElementChild, sw = set1.offsetWidth, mx = 0, dir = 1, skew = 0, stripVisible = true;
-  addEventListener('resize', function () { sw = set1.offsetWidth; });
-  new IntersectionObserver(function (en) { stripVisible = en[0].isIntersecting; }).observe(track.parentElement);
-  gsap.ticker.add(function (t, dt) {
-    if (!stripVisible) return; /* строка вне экрана — не пересчитываем */
-    var v = lenis ? lenis.velocity : 0;
-    if (v > 0.4) dir = 1; else if (v < -0.4) dir = -1;
-    mx -= (0.7 + Math.min(Math.abs(v) * 0.3, 12)) * dir * (dt / 16.7);
-    if (mx <= -sw) mx += sw; if (mx > 0) mx -= sw;
-    skew += (Math.max(-7, Math.min(7, -v * 0.4)) - skew) * 0.12;
-    track.style.transform = 'translate3d(' + mx.toFixed(2) + 'px,0,0) skewX(' + skew.toFixed(2) + 'deg)';
-  });
+  var track = $('#stripTrack');
+  if (track) {
+    var set1 = track.firstElementChild, sw = set1.offsetWidth, mx = 0, dir = 1, skew = 0, stripVisible = true;
+    addEventListener('resize', function () { sw = set1.offsetWidth; });
+    new IntersectionObserver(function (en) { stripVisible = en[0].isIntersecting; }).observe(track.parentElement);
+    gsap.ticker.add(function (t, dt) {
+      if (!stripVisible) return; /* строка вне экрана — не пересчитываем */
+      var v = lenis ? lenis.velocity : 0;
+      if (v > 0.4) dir = 1; else if (v < -0.4) dir = -1;
+      mx -= (0.7 + Math.min(Math.abs(v) * 0.3, 12)) * dir * (dt / 16.7);
+      if (mx <= -sw) mx += sw; if (mx > 0) mx -= sw;
+      skew += (Math.max(-7, Math.min(7, -v * 0.4)) - skew) * 0.12;
+      track.style.transform = 'translate3d(' + mx.toFixed(2) + 'px,0,0) skewX(' + skew.toFixed(2) + 'deg)';
+    });
+  }
 
   /* ---------- надзаголовки, заголовки, подзаголовки ---------- */
   defer(function () {
@@ -598,58 +638,64 @@
   /* ---------- подход: цикл IPM управляется прокруткой ---------- */
   defer(function () {
   var steps = $$('.step'), nodes = $$('.node'), cProg = $('#cycleProg'), cArc = $('#cycleArc'), cLbl = $('#cycleStep'), curStep = -1;
-  var setOn = function (i) {
-    if (i === curStep) return; curStep = i;
-    steps.forEach(function (s, j) { s.classList.toggle('on', j === i); });
-    nodes.forEach(function (n, j) { n.classList.toggle('on', j === i); });
-    cLbl.textContent = '0' + (i + 1) + ' / 04';
-    gsap.fromTo(cLbl, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' });
-  };
-  setOn(0);
-  ScrollTrigger.create({
-    trigger: desk ? '#podhod' : '#cycle', start: desk ? 'top 55%' : 'top 85%', end: desk ? 'bottom 75%' : 'bottom 30%', scrub: true,
-    onUpdate: function (s) {
-      var p = s.progress;
-      cProg.style.strokeDashoffset = (100 - p * 100).toFixed(2);
-      cArc.style.transform = 'rotate(' + (p * 540).toFixed(1) + 'deg)';
-      if (desk) setOn(Math.min(3, Math.floor(p * 4)));
-    }
-  });
-  if (!desk) {
-    steps.forEach(function (s, i) {
-      ScrollTrigger.create({ trigger: s, start: 'top 62%', end: 'bottom 62%', onToggle: function (st) { if (st.isActive) setOn(i); } });
+  if (cLbl && cProg && cArc) {
+    var setOn = function (i) {
+      if (i === curStep) return; curStep = i;
+      steps.forEach(function (s, j) { s.classList.toggle('on', j === i); });
+      nodes.forEach(function (n, j) { n.classList.toggle('on', j === i); });
+      cLbl.textContent = '0' + (i + 1) + ' / 04';
+      gsap.fromTo(cLbl, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' });
+    };
+    setOn(0);
+    ScrollTrigger.create({
+      trigger: desk ? '#podhod' : '#cycle', start: desk ? 'top 55%' : 'top 85%', end: desk ? 'bottom 75%' : 'bottom 30%', scrub: true,
+      onUpdate: function (s) {
+        var p = s.progress;
+        cProg.style.strokeDashoffset = (100 - p * 100).toFixed(2);
+        cArc.style.transform = 'rotate(' + (p * 540).toFixed(1) + 'deg)';
+        if (desk) setOn(Math.min(3, Math.floor(p * 4)));
+      }
     });
-    var auto = null;
-    ScrollTrigger.create({ trigger: '#cycle', start: 'top 80%', end: 'bottom 20%',
-      onToggle: function (st) { clearInterval(auto); if (st.isActive) auto = setInterval(function () { setOn((curStep + 1) % 4); }, 1800); } });
+    if (!desk) {
+      steps.forEach(function (s, i) {
+        ScrollTrigger.create({ trigger: s, start: 'top 62%', end: 'bottom 62%', onToggle: function (st) { if (st.isActive) setOn(i); } });
+      });
+      var auto = null;
+      ScrollTrigger.create({ trigger: '#cycle', start: 'top 80%', end: 'bottom 20%',
+        onToggle: function (st) { clearInterval(auto); if (st.isActive) auto = setInterval(function () { setOn((curStep + 1) % 4); }, 1800); } });
+    }
+    steps.forEach(function (s, i) { s.addEventListener('pointerenter', function () { if (fine) setOn(i); }); });
   }
-  steps.forEach(function (s, i) { s.addEventListener('pointerenter', function () { if (fine) setOn(i); }); });
 
   /* ---------- этапы: линия, точки, раскрытие фото ---------- */
   var tlHead = $('#tlhead');
-  gsap.to('#tlprog', { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '#tl', start: 'top 62%', end: 'bottom 62%', scrub: 0.5,
-    onUpdate: function (s) { tlHead.style.top = (s.progress * 100).toFixed(2) + '%'; tlHead.style.opacity = s.progress > 0 && s.progress < 1 ? 1 : 0; } } });
-  $$('.tl-row').forEach(function (row) {
-    var flip = row.classList.contains('flip'), txt = $('.tl-txt', row), box = $('.tl-img', row), pic = $('img', box);
-    var from = mobile ? 'inset(0% 0% 100% 0%)' : (flip ? 'inset(0% 0% 0% 100%)' : 'inset(0% 100% 0% 0%)');
-    onceST(row, function () {
-      row.classList.add('in');
-      gsap.fromTo(txt, fx({ opacity: 0, x: mobile ? 0 : (flip ? 50 : -50), y: mobile ? 24 : 0 }, 8), fx({ opacity: 1, x: 0, y: 0, duration: 1.3, ease: 'expo.out', clearProps: 'filter' }, 0));
-      gsap.fromTo(box, { clipPath: from }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.6, ease: 'expo.inOut' });
-      gsap.fromTo(pic, { scale: 1.3 }, { scale: 1, duration: 2.2, ease: 'expo.out' });
-    }, 'top 72%');
-  });
+  if (tlHead && $('#tlprog')) {
+    gsap.to('#tlprog', { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '#tl', start: 'top 62%', end: 'bottom 62%', scrub: 0.5,
+      onUpdate: function (s) { tlHead.style.top = (s.progress * 100).toFixed(2) + '%'; tlHead.style.opacity = s.progress > 0 && s.progress < 1 ? 1 : 0; } } });
+    $$('.tl-row').forEach(function (row) {
+      var flip = row.classList.contains('flip'), txt = $('.tl-txt', row), box = $('.tl-img', row), pic = $('img', box);
+      var from = mobile ? 'inset(0% 0% 100% 0%)' : (flip ? 'inset(0% 0% 0% 100%)' : 'inset(0% 100% 0% 0%)');
+      onceST(row, function () {
+        row.classList.add('in');
+        gsap.fromTo(txt, fx({ opacity: 0, x: mobile ? 0 : (flip ? 50 : -50), y: mobile ? 24 : 0 }, 8), fx({ opacity: 1, x: 0, y: 0, duration: 1.3, ease: 'expo.out', clearProps: 'filter' }, 0));
+        gsap.fromTo(box, { clipPath: from }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.6, ease: 'expo.inOut' });
+        gsap.fromTo(pic, { scale: 1.3 }, { scale: 1, duration: 2.2, ease: 'expo.out' });
+      }, 'top 72%');
+    });
+  }
 
   /* ---------- заявка: свечение следует за курсором ---------- */
   var orb = $('#orb');
-  gsap.set(orb, { xPercent: -50, yPercent: -50, x: cta.offsetWidth * 0.5, y: cta.offsetHeight * 0.5 });
-  if (fine) {
-    var oX = gsap.quickTo(orb, 'x', { duration: 2.2, ease: 'power3' }), oY = gsap.quickTo(orb, 'y', { duration: 2.2, ease: 'power3' });
-    cta.addEventListener('pointermove', function (e) { var r = cta.getBoundingClientRect(); oX(e.clientX - r.left); oY(e.clientY - r.top); });
-    cta.addEventListener('pointerleave', function () { oX(cta.offsetWidth * 0.5); oY(cta.offsetHeight * 0.5); });
-  } else {
-    var orbTw = gsap.to(orb, { x: '+=' + Math.round(innerWidth * 0.15), y: '-=80', duration: 6, ease: 'sine.inOut', yoyo: true, repeat: -1, paused: true });
-    ScrollTrigger.create({ trigger: cta, start: 'top bottom', end: 'bottom top', onToggle: function (st) { if (st.isActive) orbTw.play(); else orbTw.pause(); } });
+  if (orb && cta) {
+    gsap.set(orb, { xPercent: -50, yPercent: -50, x: cta.offsetWidth * 0.5, y: cta.offsetHeight * 0.5 });
+    if (fine) {
+      var oX = gsap.quickTo(orb, 'x', { duration: 2.2, ease: 'power3' }), oY = gsap.quickTo(orb, 'y', { duration: 2.2, ease: 'power3' });
+      cta.addEventListener('pointermove', function (e) { var r = cta.getBoundingClientRect(); oX(e.clientX - r.left); oY(e.clientY - r.top); });
+      cta.addEventListener('pointerleave', function () { oX(cta.offsetWidth * 0.5); oY(cta.offsetHeight * 0.5); });
+    } else {
+      var orbTw = gsap.to(orb, { x: '+=' + Math.round(innerWidth * 0.15), y: '-=80', duration: 6, ease: 'sine.inOut', yoyo: true, repeat: -1, paused: true });
+      ScrollTrigger.create({ trigger: cta, start: 'top bottom', end: 'bottom top', onToggle: function (st) { if (st.isActive) orbTw.play(); else orbTw.pause(); } });
+    }
   }
 
   /* ---------- подвал ---------- */
