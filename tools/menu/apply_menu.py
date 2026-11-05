@@ -51,6 +51,7 @@ PAGES = [
     ('index.html', '', ''),
     (DOGOVOR + '/index.html', '../', DOGOVOR),
     ('pishchevoe-proizvodstvo/index.html', '../', 'pishchevoe-proizvodstvo'),
+    ('materialy/pest-menedzhment-ili-razovaya-obrabotka/index.html', '../../', 'materialy/pest-menedzhment-ili-razovaya-obrabotka'),
 ]
 
 
@@ -69,30 +70,33 @@ def anchor(root, sid, text, cls=''):
 def build(root, cur, cta_mobile):
     home = root == ''
     in_ind = any(s == cur for s, _ in INDUSTRIES)
+    in_mat = cur.startswith('materialy')
     # шапка
     dd_items = ''.join(page_link(root, cur, s, t + ARR) for s, t in INDUSTRIES)
     dd_items += anchor(root, 'otrasli', 'Все отрасли' + ARR, 'nav-dd-all')
     spy = ' data-spy="#otrasli"' if home else ''
     btn_cls = 'nav-dd-btn active' if in_ind else 'nav-dd-btn'
+    mat_cls = ' class="active"' if in_mat else ''
     nav = (
         '<nav class="nav" aria-label="Основное меню">\n'
         f'      <div class="nav-dd"><button class="{btn_cls}" type="button" aria-expanded="false" aria-controls="nav-otrasli"{spy}>Отрасли{CHEV}</button>'
         f'<div class="nav-dd-panel" id="nav-otrasli">{dd_items}</div></div>'
         + (f'<a href="./" class="active" aria-current="page">Договор</a>' if cur == DOGOVOR else f'<a href="{root}{DOGOVOR}/">Договор</a>')
         + anchor(root, 'podhod', 'Метод IPM') + anchor(root, 'usloviya', 'Цена')
-        + f'<a href="{root}materialy/">Материалы</a>\n    </nav>'
+        + f'<a href="{root}materialy/"{mat_cls}>Материалы</a>\n    </nav>'
     )
     # мобильное меню
     sub = ''.join(page_link(root, cur, s, t) for s, t in INDUSTRIES) + anchor(root, 'otrasli', 'Все отрасли')
     opened = ' open" data-open' if in_ind else '"'
     dog_text = 'Договор <small>на дератизацию и дезинсекцию</small>'
+    mm_mat_cur = ' aria-current="page"' if cur == 'materialy' else ''
     mm = (
         '<nav class="mmenu" id="mmenu" aria-label="Мобильное меню">\n'
         f'  <div class="mm-group{opened}><button class="mm-toggle" type="button" aria-expanded="{"true" if in_ind else "false"}" aria-controls="mm-otrasli">Отрасли{CHEV_M}</button>'
         f'<div class="mm-sub" id="mm-otrasli"><div>{sub}</div></div></div>'
         + (f'<a href="./" aria-current="page">{dog_text}</a>' if cur == DOGOVOR else f'<a href="{root}{DOGOVOR}/">{dog_text}</a>')
         + anchor(root, 'podhod', 'Метод IPM') + anchor(root, 'usloviya', 'Цена')
-        + f'<a href="{root}materialy/">Материалы</a>\n'
+        + f'<a href="{root}materialy/"{mm_mat_cur}>Материалы</a>\n'
         f'  {cta_mobile}\n</nav>'
     )
     # подвал: колонки «Отрасли», «Обслуживание», «Материалы» (описание и «Контакты» остаются как были)
@@ -104,7 +108,7 @@ def build(root, cur, cta_mobile):
     # подпись с вложенным <span class="nw"> оборачиваем в один <span>: на телефоне ссылки подвала — inline-flex,
     # и без обёртки пробел перед вложенным тегом пропал бы
     wrap = lambda t: f'<span>{t}</span>' if '<' in t else t
-    ft_mat = ''.join(li(f'<a href="{root}{s}/">{wrap(t)}</a>') for s, t in MATERIALS)
+    ft_mat = ''.join(li(page_link(root, cur, s, wrap(t))) for s, t in MATERIALS)
     cols = (f'<div><h4>Отрасли</h4><ul>{ft_ind}</ul></div>\n'
             f'      <div><h4>Обслуживание</h4><ul>{ft_srv}</ul></div>\n'
             f'      <div><h4>Материалы</h4><ul>{ft_mat}</ul></div>')
@@ -127,8 +131,8 @@ def main():
         s = sub1(r'<nav class="mmenu" id="mmenu" aria-label="Мобильное меню">.*?</nav>', mm, s)
         s = sub1(r'<div><h4>(?:Объекты|Отрасли)</h4>.*?(?=\n\s*<div><h4>Контакты</h4>)', cols, s)
         # нижняя строка подвала: ссылка на согласие рядом с политикой
-        if 'soglasie/">Согласие на обработку данных' not in s:
-            s, n = re.subn(r'(<div class="fb">.*?<a href="((?:\.\./)?)privacy/">Политика конфиденциальности</a>)',
+        if 'soglasie/">Согласие' not in s:
+            s, n = re.subn(r'(<div class="fb">.*?<a href="((?:\.\./)*)privacy/">Политика конфиденциальности</a>)',
                            lambda m: m.group(1) + f'<a href="{m.group(2)}soglasie/">Согласие на обработку данных</a>',
                            s, count=1, flags=re.S)
             assert n == 1, 'нет строки .fb с политикой'
