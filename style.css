@@ -470,7 +470,7 @@ html:not(.js) .bar-f,.anim-fail .bar-f{width:var(--w)}
 .field{position:relative}
 .field input,.field select,.field textarea{width:100%;height:clamp(54px,3.7vw,68px);border-radius:12px;background:rgba(24,24,27,.6);border:1.4px solid var(--line2);padding:0 20px;font-size:16px;outline:none;transition:border-color .3s,background .3s,box-shadow .3s;appearance:none}
 .field textarea{height:110px;padding-top:18px;resize:vertical}
-.field select{color:var(--t2);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1.5l5 5 5-5' stroke='%239f9fa9' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 20px center}
+.field select{color:var(--t2);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1.5l5 5 5-5' stroke='%239f9fa9' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 20px center;padding-right:44px;text-overflow:ellipsis}
 .field select:valid{color:#fff}
 .field option{background:#18181b;color:#fff}
 .field input::placeholder,.field textarea::placeholder{color:var(--t3)}
@@ -622,6 +622,14 @@ footer{border-top:1px solid var(--line);padding:clamp(56px,4.3vw,82px) 0 36px;ba
   footer{padding-bottom:110px}
   .grain{opacity:.04}
 }
+/* Кнопка отправки формы на узких телефонах: меньше отступы, на 360 px и уже без стрелки и чуть мельче шрифт.
+   Если подпись всё равно длиннее кнопки, она переносится на вторую строку, а не обрезается. */
+@media (max-width:600px){ .form .btn-t{white-space:normal;text-align:center} }
+@media (max-width:400px){ .form .btn-lg{padding:0 18px;gap:10px} }
+@media (max-width:360px){ .form .btn-lg{padding:0 14px;font-size:15px} .form .btn-ic{display:none} }
+@media (max-width:340px){ .form .btn-lg{font-size:14px} }
+/* Длинная подпись в списке на узком экране не заезжает под стрелку */
+@media (max-width:400px){ .field select{padding-right:34px;background-position:right 14px center} }
 @media (hover:none){
   .card::after{display:none}
   .btn:active::before{transform:none;border-radius:0}
