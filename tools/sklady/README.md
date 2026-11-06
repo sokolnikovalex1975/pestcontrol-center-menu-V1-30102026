@@ -24,7 +24,7 @@
 
 ## Картинки
 
-Мастер-файлы PNG 2752×1536 (Nano Banana Pro) — в файлах проекта Perplexity («Страница Склады и логистика/Фото — мастер-файлы»), в репозиторий не кладутся. Веб-версии делает `python3 tools/sklady/images.py <папка с мастер-файлами>`:
+Мастер-файлы PNG 2752×1536 (Nano Banana Pro) — в файлах проекта Perplexity («Страница Склады и логистика/Изображения (мастер)»), в репозиторий не кладутся. Веб-версии делает `python3 tools/sklady/images.py <папка с мастер-файлами>`:
 
 - `img/sklad-hero.webp` (1920×1072), `img/sklad-hero-1440.webp`, `img/sklad-hero-mob.webp` (1024×576), `img/sklad-hero-mob-760.webp`, `img/sklady-og.jpg` (1200×630);
 - `img/sklad-vorota`, `sklad-holod`, `sklad-fulfilment`, `sklad-produkty`, `sklad-rampa` (фон формы, загружается при подходе к блоку), `sklad-feromon`, `sklad-farma` — по 1200×670 и `*-720.webp` для телефонов.
