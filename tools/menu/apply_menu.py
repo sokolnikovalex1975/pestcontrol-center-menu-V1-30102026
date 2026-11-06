@@ -2,7 +2,7 @@
 """Общее меню сайта (вариант 1 черновика «SEO/Главное меню — черновик v0», 29–30.10.2026).
 
 Ставит одинаковые шапку (меню), мобильное меню и подвал на все страницы:
-главную, «Договор на дератизацию и дезинсекцию» и «Пест-контроль на пищевом производстве».
+главную, «Договор на дератизацию и дезинсекцию», «Пест-контроль на пищевом производстве», «Пест-контроль фармацевтического производства» и остальные внутренние страницы.
 
     Отрасли ▾ · Договор · Метод IPM · Цена · Материалы
 
@@ -11,7 +11,7 @@
 Телефон, ссылки Telegram/MAX, кнопки заявки и блок счётчиков не меняются.
 
 Запуск из корня репозитория: python3 tools/menu/apply_menu.py
-Пищевую страницу собирает tools/food/assemble.py — после него запустите этот скрипт ещё раз.
+Пищевую страницу собирает tools/food/assemble.py, фармацевтическую — tools/farma/assemble.py: после них запустите этот скрипт ещё раз.
 """
 import re
 import sys
@@ -61,6 +61,7 @@ PAGES = [
     ('dezinsektsiya/index.html', '../', 'dezinsektsiya'),
     (DOGOVOR + '/index.html', '../', DOGOVOR),
     ('pishchevoe-proizvodstvo/index.html', '../', 'pishchevoe-proizvodstvo'),
+    ('farmatsevticheskie-proizvodstva/index.html', '../', 'farmatsevticheskie-proizvodstva'),
     ('materialy/pest-menedzhment-ili-razovaya-obrabotka/index.html', '../../', 'materialy/pest-menedzhment-ili-razovaya-obrabotka'),
     ('materialy/index.html', '../', 'materialy'),
     ('materialy/programma-pest-kontrolya/index.html', '../../', 'materialy/programma-pest-kontrolya'),
