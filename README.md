@@ -42,7 +42,9 @@
 | `server/` | Файлы, которые работают только на хостинге: обработчик формы, `.htaccess`, `robots.txt`, `sitemap.xml`, счётчики |
 | `tools/build.py` | Сборка главной: встраивает сжатый `style.css` в `index.html` и сжимает `app.js` в `app.min.js`. Запускать после каждой правки `style.css` или `app.js`: `python3 tools/build.py` (нужен Node.js) |
 | `tools/legal/` | Генератор страниц документов с расстановкой неразрывных пробелов |
-| `tools/menu/` | `apply_menu.py` — одинаковые шапка, мобильное меню и подвал на всех страницах (запускать после `tools/food/assemble.py`, затем `tools/build.py`) |
+| `tools/menu/` | `apply_menu.py` — одинаковые шапка, мобильное меню и подвал на всех страницах (запускать после `tools/food/assemble.py`, `tools/dezinsektsiya/assemble.py`, `tools/zhurnal/build_zhurnal.py`, затем `tools/build.py`) |
+| `tools/dezinsektsiya/` | Исходники страницы «Дезинсекция для организаций» `/dezinsektsiya/`: `assemble.py`, `main.html`, `extra.css`, `template-dogovor.html`; в `README.md` — состав страницы и сверенное описание счётчиков (Метрика `113675622`, UIS, Radist) |
+| `tools/zhurnal/` | Журнал пест-контроля `/materialy/zhurnal-pest-kontrolya/`: генератор образца и шаблона PDF (один макет, совпадают лист в лист), превью, og:image и страница (`build_zhurnal.py`); порядок сборки — в `README.md` |
 | `tools/deploy/` | Скрипт выкладки по FTP (`run_all.sh`) и копии файлов до выкладок 28.10 и 29.10.2026 (`backup/`) |
 | `tools/qa/` | `tel_wait_test.mjs` — проверка ожидания подмены номера при первом касании (13 сценариев, Chromium, заглушка UIS); `radist_test.mjs` — проверка кода заявки Radist в ссылках Telegram и MAX (19 проверок, настоящий скрипт Radist, отправка визита перехватывается); `hero_cls_test.mjs` — сдвиг макета первого экрана при постепенной загрузке (7 точек обрыва × 4 размера экрана); `font_cls_test.mjs` — сдвиг макета при подмене запасного шрифта на Inter (шрифт с задержкой 1,2 и 3,5 с × 11 размеров экрана); как запускать — в начале файлов |
 
