@@ -474,9 +474,9 @@
 </div>
 
 <script>
-/* Предпросмотр: вне рабочего домена заявка не отправляется (на пестконтроль-центр.рф этот блок не срабатывает) */
+/* Локальная проверка: на localhost заявка не отправляется (на GitHub Pages отправку отключает app.js, на сайте заявка уходит в send.php) */
 (function(){
-  if(!/^(www\.)?xn----itbbsflddbfpfdodg9d0f\.xn--p1ai$/i.test(location.hostname)){
+  if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)){
     var origFetch=window.fetch;
     window.fetch=function(u){
       if(typeof u==='string'&&u.indexOf('send.php')>-1){
