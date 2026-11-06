@@ -11,7 +11,7 @@
 Телефон, ссылки Telegram/MAX, кнопки заявки и блок счётчиков не меняются.
 
 Запуск из корня репозитория: python3 tools/menu/apply_menu.py
-Пищевую страницу собирает tools/food/assemble.py, фармацевтическую — tools/farma/assemble.py: после них запустите этот скрипт ещё раз.
+Пищевую страницу собирает tools/food/assemble.py, фармацевтическую — tools/farma/assemble.py, страницу складов — tools/sklady/assemble.py: после них запустите этот скрипт ещё раз.
 """
 import re
 import sys
@@ -62,6 +62,7 @@ PAGES = [
     (DOGOVOR + '/index.html', '../', DOGOVOR),
     ('pishchevoe-proizvodstvo/index.html', '../', 'pishchevoe-proizvodstvo'),
     ('farmatsevticheskie-proizvodstva/index.html', '../', 'farmatsevticheskie-proizvodstva'),
+    ('sklady-i-logistika/index.html', '../', 'sklady-i-logistika'),
     ('materialy/pest-menedzhment-ili-razovaya-obrabotka/index.html', '../../', 'materialy/pest-menedzhment-ili-razovaya-obrabotka'),
     ('materialy/index.html', '../', 'materialy'),
     ('materialy/programma-pest-kontrolya/index.html', '../../', 'materialy/programma-pest-kontrolya'),
